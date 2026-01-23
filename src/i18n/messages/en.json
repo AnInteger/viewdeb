@@ -1,0 +1,115 @@
+{
+  "upload": {
+    "title": "Drag .deb file here",
+    "subtitle": "or click to select a file",
+    "selectFile": "Select File",
+    "maxSize": "Maximum file size: 500 MB",
+    "parsing": "Parsing package...",
+    "startParsing": "Start Parsing"
+  },
+  "fileInfo": {
+    "privacyTitle": "Privacy Protection",
+    "privacyDesc": "Files are processed temporarily on the server and deleted immediately after parsing. No records are saved.",
+    "securityTitle": "Secure Parsing",
+    "securityDesc": "Uses official dpkg tools to ensure extraction integrity and checksum verification"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "files": "Files",
+    "scripts": "Scripts",
+    "control": "Control"
+  },
+  "overview": {
+    "basicInfo": "Basic Information",
+    "stats": "Statistics",
+    "dependencies": "Dependencies",
+    "package": "Package",
+    "version": "Version",
+    "architecture": "Architecture",
+    "maintainer": "Maintainer",
+    "priority": "Priority",
+    "section": "Section",
+    "homepage": "Homepage",
+    "description": "Description",
+    "originalSize": "Original Size",
+    "extractedSize": "Extracted Size",
+    "fileCount": "File Count",
+    "elfFiles": "ELF Files",
+    "desktopFiles": "Desktop Files",
+    "depends": "Depends",
+    "recommends": "Recommends",
+    "suggests": "Suggests",
+    "conflicts": "Conflicts"
+  },
+  "files": {
+    "searchPlaceholder": "Search file path",
+    "allFiles": "All Files",
+    "elfFiles": "ELF Files",
+    "desktopFiles": "Desktop Files",
+    "otherFiles": "Other Files",
+    "expandAll": "Expand All",
+    "collapseAll": "Collapse All",
+    "noFiles": "No matching files found"
+  },
+  "elfInfo": {
+    "title": "ELF File Information",
+    "type": "Type",
+    "machine": "Machine",
+    "entry": "Entry Point",
+    "interpreter": "Interpreter",
+    "dynamicDeps": "Dynamic Dependencies",
+    "sections": "Sections",
+    "moreSections": "... {count} more sections"
+  },
+  "desktopInfo": {
+    "title": "Desktop File Information",
+    "name": "Name",
+    "genericName": "Generic Name",
+    "comment": "Comment",
+    "icon": "Icon",
+    "exec": "Exec",
+    "terminal": "Terminal",
+    "type": "Type",
+    "categories": "Categories",
+    "keywords": "Keywords",
+    "noDisplay": "This application is configured not to be displayed in menus (NoDisplay=true)",
+    "hidden": "This application is hidden (Hidden=true)"
+  },
+  "scripts": {
+    "preinst": "Pre-installation Script",
+    "postinst": "Post-installation Script",
+    "prerm": "Pre-removal Script",
+    "postrm": "Post-removal Script",
+    "config": "Configuration Script",
+    "templates": "Templates",
+    "noScripts": "This package contains no scripts"
+  },
+  "control": {
+    "controlFile": "Control File (control)",
+    "md5sums": "MD5 Checksums (md5sums)",
+    "conffiles": "Configuration Files (conffiles)"
+  },
+  "common": {
+    "uploadNew": "Upload New File",
+    "parseTime": "Parse Time",
+    "compressionRate": "Compression Rate",
+    "filePreview": "File preview feature requires separate backend API support",
+    "fileSize": "File Size",
+    "footer": "Built with Next.js + TypeScript + dp · Supports .deb and .udeb formats"
+  },
+  "features": {
+    "fastParsing": "Fast parsing",
+    "fileList": "Complete file list",
+    "scriptView": "Script view",
+    "binaryAnalysis": "Binary analysis"
+  },
+  "errors": {
+    "noFile": "Please upload a file",
+    "invalidType": "Please upload a .deb or .udeb file",
+    "fileTooLarge": "File size exceeds 500MB limit",
+    "noFileProvided": "No file provided",
+    "invalidFileType": "Invalid file type. Only .deb, .udeb files are supported",
+    "uploadFailed": "Upload or parse failed",
+    "parseFailed": "Parse failed"
+  }
+}

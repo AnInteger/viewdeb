@@ -1,0 +1,115 @@
+{
+  "upload": {
+    "title": "拖拽 .deb 文件到这里",
+    "subtitle": "或者点击按钮选择文件",
+    "selectFile": "选择文件",
+    "maxSize": "支持的最大文件大小: 500 MB",
+    "parsing": "正在解析包...",
+    "startParsing": "开始解析"
+  },
+  "fileInfo": {
+    "privacyTitle": "隐私保护",
+    "privacyDesc": "文件仅在服务器临时处理，解析完成后立即删除，不保存任何记录",
+    "securityTitle": "安全解析",
+    "securityDesc": "使用官方 dpkg 工具解析，确保提取完整性，支持校验和验证"
+  },
+  "tabs": {
+    "overview": "概览",
+    "files": "文件列表",
+    "scripts": "脚本",
+    "control": "控制文件"
+  },
+  "overview": {
+    "basicInfo": "基本信息",
+    "stats": "统计信息",
+    "dependencies": "依赖关系",
+    "package": "包名",
+    "version": "版本",
+    "architecture": "架构",
+    "maintainer": "维护者",
+    "priority": "优先级",
+    "section": "Section",
+    "homepage": "主页",
+    "description": "描述",
+    "originalSize": "原始大小",
+    "extractedSize": "解压大小",
+    "fileCount": "文件数量",
+    "elfFiles": "ELF 文件",
+    "desktopFiles": "Desktop 文件",
+    "depends": "依赖",
+    "recommends": "推荐",
+    "suggests": "建议",
+    "conflicts": "冲突"
+  },
+  "files": {
+    "searchPlaceholder": "搜索文件路径",
+    "allFiles": "全部文件",
+    "elfFiles": "ELF 文件",
+    "desktopFiles": "Desktop 文件",
+    "otherFiles": "其他文件",
+    "expandAll": "全部展开",
+    "collapseAll": "全部折叠",
+    "noFiles": "没有找到匹配的文件"
+  },
+  "elfInfo": {
+    "title": "ELF 文件信息",
+    "type": "类型",
+    "machine": "架构",
+    "entry": "入口地址",
+    "interpreter": "解释器",
+    "dynamicDeps": "动态库依赖",
+    "sections": "段信息",
+    "moreSections": "... 还有 {count} 个段"
+  },
+  "desktopInfo": {
+    "title": "Desktop 文件信息",
+    "name": "名称",
+    "genericName": "通用名称",
+    "comment": "描述",
+    "icon": "图标",
+    "exec": "执行命令",
+    "terminal": "终端运行",
+    "type": "类型",
+    "categories": "分类",
+    "keywords": "关键词",
+    "noDisplay": "此应用被配置为不在菜单中显示 (NoDisplay=true)",
+    "hidden": "此应用被隐藏 (Hidden=true)"
+  },
+  "scripts": {
+    "preinst": "安装前脚本",
+    "postinst": "安装后脚本",
+    "prerm": "卸载前脚本",
+    "postrm": "卸载后脚本",
+    "config": "配置脚本",
+    "templates": "模板文件",
+    "noScripts": "此包不包含任何脚本"
+  },
+  "control": {
+    "controlFile": "控制文件 (control)",
+    "md5sums": "MD5 校验和 (md5sums)",
+    "conffiles": "配置文件 (conffiles)"
+  },
+  "common": {
+    "uploadNew": "上传新文件",
+    "parseTime": "解析耗时",
+    "compressionRate": "压缩率",
+    "filePreview": "文件预览功能需要后端单独API支持",
+    "fileSize": "文件大小",
+    "footer": "基于 Next.js + TypeScript + dp 构建 · 支持 .deb 和 .udeb 格式"
+  },
+  "features": {
+    "fastParsing": "快速解析",
+    "fileList": "完整文件列表",
+    "scriptView": "脚本查看",
+    "binaryAnalysis": "二进制分析"
+  },
+  "errors": {
+    "noFile": "请上传文件",
+    "invalidType": "请上传 .deb 或 .udeb 格式的文件",
+    "fileTooLarge": "文件大小超过 500MB 限制",
+    "noFileProvided": "请提供文件",
+    "invalidFileType": "无效的文件类型，仅支持 .deb 和 .udeb 文件",
+    "uploadFailed": "上传或解析失败",
+    "parseFailed": "解析失败"
+  }
+}
