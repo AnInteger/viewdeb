@@ -1,27 +1,8 @@
-'use client';
-
 import { Moon, Sun, Monitor } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useTheme } from '@/lib/theme';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  // Only show the toggle after mounting to avoid hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="w-9 h-9 bg-gray-200 rounded-lg animate-pulse dark:bg-slate-800"></div>
-        <div className="w-9 h-9 bg-gray-200 rounded-lg animate-pulse dark:bg-slate-800"></div>
-        <div className="w-9 h-9 bg-gray-200 rounded-lg animate-pulse dark:bg-slate-800"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-center gap-2">

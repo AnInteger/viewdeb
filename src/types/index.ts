@@ -10,7 +10,7 @@ export interface DebianPackageMetadata {
   Homepage?: string;
   Description?: string;
   Depends?: string;
-  PreDepends?: string;
+  'Pre-Depends'?: string;
   Recommends?: string;
   Suggests?: string;
   Conflicts?: string;
@@ -35,8 +35,8 @@ export interface FileInfo {
   gid: number;
   mtime: string;
   type: 'file' | 'directory' | 'symlink' | 'elf' | 'desktop';
-  isELF?: boolean;
-  isDesktop?: boolean;
+  isElf: boolean;
+  isDesktop: boolean;
 }
 
 // ELF 文件信息

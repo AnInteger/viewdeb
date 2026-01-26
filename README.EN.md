@@ -1,8 +1,9 @@
 # ViewDeb
 
-A modern, clean online Debian package parser tool for quickly viewing the contents of .deb packages.
+A modern, clean Debian package parser tool built as a desktop application with the Tauri framework for quickly viewing the contents of .deb packages.
 
-![ViewDeb](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
+![ViewDeb](https://img.shields.io/badge/Tauri-2-FFC131?style=flat-square&logo=tauri)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![MIT License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
@@ -20,49 +21,51 @@ A modern, clean online Debian package parser tool for quickly viewing the conten
 - 🖥️ **Desktop Files** - View desktop application configuration information
 - 🌍 **Multi-language Support** - Chinese and English UI
 - 🌓 **Theme Switching** - Light mode, dark mode, and follow system theme
+- 💻 **Desktop App** - Native desktop experience without browser
 
 ## Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: React 19
+- **Build Tool**: Vite 6
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Internationalization**: next-intl
-- **Theme Management**: next-themes
 - **Icons**: Lucide React
 
-### Backend
-- **Runtime**: Next.js API Routes
-- **Package Parsing**: dpkg/debsums tools
-- **ELF Analysis**: readelf tool
+### Desktop Framework
+- **Framework**: Tauri 2
+- **Backend Language**: Rust
+- **Package Manager**: Cargo
+
+### Package Parsing
+- **Tool**: dpkg-deb
+- **ELF Analysis**: readelf
 
 ## System Dependencies
 
-The project requires the following commands to be installed on the system (all are common Linux tools):
+Building and running the project requires the following system tools:
 
 | Command | Purpose |
 |---------|---------|
 | `dpkg` | Debian package manager, used to extract and unpack .deb files |
 | `dpkg-deb` | Subcommand of dpkg for handling .deb package file operations |
-| `debsums` | Debian package checksum and verification tool |
 | `readelf` | ELF file analysis tool for parsing binary file information |
+| `cargo` | Rust package manager (required for Tauri builds) |
 
 ### Install System Dependencies
 
 **Ubuntu/Debian:**
 ```bash
 sudo apt-get update
-sudo apt-get install -y dpkg binutils
+sudo apt-get install -y dpkg binutils cargo
 ```
 
 **CentOS/RHEL/Fedora:**
 ```bash
-sudo yum install -y dpkg binutils
+sudo yum install -y dpkg binutils cargo
 # or
-sudo dnf install -y dpkg binutils
+sudo dnf install -y dpkg binutils cargo
 ```
-
-These tools are typically included in the base packages of most Linux distributions.
 
 ## Getting Started
 
@@ -70,6 +73,7 @@ These tools are typically included in the base packages of most Linux distributi
 
 - Node.js 18 or higher
 - npm, yarn, or pnpm
+- Rust and Cargo (required for Tauri)
 - Linux system (requires dpkg and binutils)
 
 ### Installation
@@ -78,22 +82,32 @@ These tools are typically included in the base packages of most Linux distributi
 npm install
 ```
 
-### Development Server
+### Development
 
+**Web Development Mode (using Vite):**
 ```bash
 npm run dev
 ```
 
-After the development server starts, visit in your browser:
-- Chinese: http://localhost:3000/zh
-- English: http://localhost:3000/en
+**Tauri Desktop App Development Mode:**
+```bash
+npm run tauri:dev
+```
 
 ### Production Build
 
+**Build Web Version:**
 ```bash
 npm run build
-npm run start
+npm run preview
 ```
+
+**Build Tauri Desktop Application:**
+```bash
+npm run tauri:build
+```
+
+After building, the desktop application will be located in the `src-tauri/target/release/bundle/` directory.
 
 ## Usage
 
@@ -112,40 +126,40 @@ npm run start
 ```
 viewdeb/
 ├── src/
-│   ├── app/
-│   │   ├── [locale]/          # Internationalized routes
-│   │   │   ├── page.tsx       # Main page
-│   │   │   └── layout.tsx     # Layout component (with translation loading)
-│   │   ├── api/
-│   │   │   └── parse/route.ts # Parse API
-│   │   └── globals.css        # Global styles
 │   ├── components/
-│   │   ├── FileUpload.tsx     # File upload component
-│   │   ├── PackageView.tsx    # Package info display component
-│   │   ├── ThemeToggle.tsx    # Theme toggle component
-│   │   └── LanguageSelector.tsx # Language selector
-│   ├── i18n/
-│   │   ├── messages/          # Translation files
-│   │   │   ├── zh.json
-│   │   │   └── en.json
-│   │   ├── request.tsx       # i18n configuration
-│   │   └── routing.ts         # Routing configuration
-│   └── lib/
-│       └── extractors/
-│           └── debianExtractor.ts # Core Debian package parsing logic
-├── public/                   # Static assets
+│   │   ├── FileUpload.tsx        # File upload component
+│   │   ├── PackageView.tsx       # Package info display component
+│   │   ├── ThemeToggle.tsx       # Theme toggle component
+│   │   └── LanguageSelector.tsx  # Language selector
+│   ├── lib/
+│   │   ├── i18n/                 # Internationalization
+│   │   │   ├── index.ts
+│   │   │   └── messages/
+│   │   │       ├── zh.json
+│   │   │       └── en.json
+│   │   ├── platform/             # Platform-specific features
+│   │   └── theme/                # Theme management
+│   ├── App.tsx                   # App entry
+│   └── main.tsx                  # React entry
+├── src-tauri/
+│   ├── src/                      # Rust backend code
+│   ├── capabilities/             # Tauri permissions config
+│   ├── icons/                    # App icons
+│   ├── tauri.conf.json           # Tauri configuration
+│   └── Cargo.toml                # Rust dependencies
+├── index.html                    # HTML template
+├── vite.config.ts                # Vite configuration
 ├── package.json
 ├── tsconfig.json
-├── tailwind.config.ts
-└── next.config.js
+└── tailwind.config.ts
 ```
 
 ## Security & Privacy
 
-- ✅ Files are processed temporarily on the server
-- ✅ Deleted immediately after parsing, no records are saved
+- ✅ Files are processed locally, no server upload
 - ✅ Uses official dpkg tools to ensure extraction integrity
 - ✅ Supports checksum verification
+- ✅ Open source code, self-auditable
 
 ## Roadmap
 
@@ -153,8 +167,16 @@ viewdeb/
 - [ ] Add file preview functionality
 - [ ] Support batch upload
 - [ ] Add more ELF analysis details
-- [ ] Support direct online installation (deb packages)
+- [ ] Support direct deb package installation
 - [ ] Add package comparison feature
+
+## Architecture Changes
+
+### v0.2.0 - Architecture Refactor
+- Migrated from Next.js to Vite + React
+- Added Tauri desktop application support
+- Changed from server-side rendering to pure client-side application
+- Removed dependency on runtime server
 
 ## Contributing
 
@@ -168,9 +190,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 This project uses the following open-source projects:
 
-- [Next.js](https://nextjs.org/) - React framework
+- [Tauri](https://tauri.app/) - Cross-platform desktop app framework
+- [React](https://react.dev/) - UI framework
+- [Vite](https://vitejs.dev/) - Build tool
 - [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-- [next-intl](https://next-intl-docs.vercel.app/) - Internationalization solution
 - [Lucide](https://lucide.dev/) - Icon library
 
 ---

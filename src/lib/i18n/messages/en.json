@@ -95,13 +95,28 @@
     "compressionRate": "Compression Rate",
     "filePreview": "File preview feature requires separate backend API support",
     "fileSize": "File Size",
-    "footer": "Built with Next.js + TypeScript + dp · Supports .deb and .udeb formats"
+    "footer": "Built with Tauri + TypeScript + Rust · Supports .deb and .udeb formats"
   },
   "features": {
+    "title": "Features",
+    "subtitle": "Powerful .deb package analysis tool",
+    "privacy": "Privacy protection",
+    "privacyDesc": "Fully local processing, files never uploaded",
+    "security": "Secure parsing",
+    "securityDesc": "Uses official dpkg tools",
     "fastParsing": "Fast parsing",
+    "fastParsingDesc": "Parse large deb packages in seconds",
     "fileList": "Complete file list",
+    "fileListDesc": "Complete file list with search",
     "scriptView": "Script view",
-    "binaryAnalysis": "Binary analysis"
+    "scriptViewDesc": "View install and remove scripts",
+    "binaryAnalysis": "Binary analysis",
+    "binaryAnalysisDesc": "ELF binary file analysis",
+    "localProcessing": "Local processing",
+    "localProcessingDesc": "Fully offline processing, files never uploaded",
+    "formatSupport": "Format support",
+    "formatSupportDesc": "Supports .deb and .udeb formats",
+    "techStack": "Built with Tauri + TypeScript + Rust"
   },
   "errors": {
     "noFile": "Please upload a file",

@@ -95,13 +95,28 @@
     "compressionRate": "压缩率",
     "filePreview": "文件预览功能需要后端单独API支持",
     "fileSize": "文件大小",
-    "footer": "基于 Next.js + TypeScript + dp 构建 · 支持 .deb 和 .udeb 格式"
+    "footer": "基于 Tauri + TypeScript + Rust 构建 · 支持 .deb 和 .udeb 格式"
   },
   "features": {
+    "title": "功能特性",
+    "subtitle": "强大的 .deb 包分析工具",
+    "privacy": "隐私保护",
+    "privacyDesc": "完全本地处理，文件不上传",
+    "security": "安全解析",
+    "securityDesc": "使用官方 dpkg 工具",
     "fastParsing": "快速解析",
+    "fastParsingDesc": "秒级解析大型 deb 包",
     "fileList": "完整文件列表",
+    "fileListDesc": "完整的文件列表和搜索",
     "scriptView": "脚本查看",
-    "binaryAnalysis": "二进制分析"
+    "scriptViewDesc": "查看安装和卸载脚本",
+    "binaryAnalysis": "二进制分析",
+    "binaryAnalysisDesc": "ELF 二进制文件分析",
+    "localProcessing": "本地处理",
+    "localProcessingDesc": "完全离线处理，文件不上传服务器",
+    "formatSupport": "格式支持",
+    "formatSupportDesc": "支持 .deb 和 .udeb 格式",
+    "techStack": "基于 Tauri + TypeScript + Rust 构建"
   },
   "errors": {
     "noFile": "请上传文件",

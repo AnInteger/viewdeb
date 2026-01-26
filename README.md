@@ -1,8 +1,9 @@
 # ViewDeb
 
-一个现代化、简洁的 Debian 软件包在线解析工具，支持快速查看 .deb 包的内容信息。
+一个现代化、简洁的 Debian 软件包解析工具，基于 Tauri 框架构建的桌面应用，支持快速查看 .deb 包的内容信息。
 
-![ViewDeb](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
+![ViewDeb](https://img.shields.io/badge/Tauri-2-FFC131?style=flat-square&logo=tauri)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![MIT License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
@@ -20,49 +21,51 @@
 - 🖥️ **Desktop 文件** - 查看桌面应用配置信息
 - 🌍 **多语言支持** - 支持中文和英文界面切换
 - 🌓 **主题切换** - 支持浅色、深色、跟随系统三种主题
+- 💻 **桌面应用** - 原生桌面体验，无需浏览器
 
 ## 技术架构
 
 ### 前端
-- **框架**: Next.js 15 (App Router)
+- **框架**: React 19
+- **构建工具**: Vite 6
 - **语言**: TypeScript
 - **样式**: Tailwind CSS
-- **国际化**: next-intl
-- **主题管理**: next-themes
 - **图标库**: Lucide React
 
-### 后端
-- **运行时**: Next.js API Routes
-- **包解析**: dpkg/debsums 工具
-- **ELF 分析**: readelf 工具
+### 桌面框架
+- **框架**: Tauri 2
+- **后端语言**: Rust
+- **包管理**: Cargo
+
+### 包解析
+- **工具**: dpkg-deb
+- **ELF 分析**: readelf
 
 ## 系统依赖
 
-项目运行需要系统安装以下命令（均为 Linux 系统常见工具）：
+构建和运行项目需要系统安装以下工具：
 
 | 命令 | 用途 |
 |------|------|
 | `dpkg` | Debian 包管理器，用于解压和提取 .deb 文件 |
 | `dpkg-deb` | dpkg 的子命令，用于处理 .deb 包文件操作 |
-| `debsums` | Debian 包校验和验证工具 |
 | `readelf` | ELF 文件分析工具，用于解析二进制文件信息 |
+| `cargo` | Rust 包管理器（Tauri 构建需要） |
 
 ### 安装系统依赖
 
 **Ubuntu/Debian:**
 ```bash
 sudo apt-get update
-sudo apt-get install -y dpkg binutils
+sudo apt-get install -y dpkg binutils cargo
 ```
 
 **CentOS/RHEL/Fedora:**
 ```bash
-sudo yum install -y dpkg binutils
+sudo yum install -y dpkg binutils cargo
 # 或
-sudo dnf install -y dpkg binutils
+sudo dnf install -y dpkg binutils cargo
 ```
-
-这些工具通常已包含在大多数 Linux 发行版的基础包中。
 
 ## 快速开始
 
@@ -70,6 +73,7 @@ sudo dnf install -y dpkg binutils
 
 - Node.js 18 或更高版本
 - npm 或 yarn 或 pnpm
+- Rust 和 Cargo（Tauri 需要）
 - Linux 系统（需要 dpkg 和 binutils）
 
 ### 安装依赖
@@ -78,22 +82,32 @@ sudo dnf install -y dpkg binutils
 npm install
 ```
 
-### 启动开发服务器
+### 启动开发环境
 
+**Web 开发模式（使用 Vite）:**
 ```bash
 npm run dev
 ```
 
-开发服务器启动后，在浏览器中访问：
-- 中文版: http://localhost:3000/zh
-- 英文版: http://localhost:3000/en
+**Tauri 桌面应用开发模式:**
+```bash
+npm run tauri:dev
+```
 
 ### 构建生产版本
 
+**构建 Web 版本:**
 ```bash
 npm run build
-npm run start
+npm run preview
 ```
+
+**构建 Tauri 桌面应用:**
+```bash
+npm run tauri:build
+```
+
+构建完成后，桌面应用位于 `src-tauri/target/release/bundle/` 目录。
 
 ## 使用说明
 
@@ -112,40 +126,40 @@ npm run start
 ```
 viewdeb/
 ├── src/
-│   ├── app/
-│   │   ├── [locale]/          # 国际化路由
-│   │   │   ├── page.tsx       # 主页面
-│   │   │   └── layout.tsx     # 布局组件（包含翻译加载）
-│   │   ├── api/
-│   │   │   └── parse/route.ts # 解析 API
-│   │   └── globals.css        # 全局样式
 │   ├── components/
-│   │   ├── FileUpload.tsx     # 文件上传组件
-│   │   ├── PackageView.tsx    # 包信息展示组件
-│   │   ├── ThemeToggle.tsx    # 主题切换组件
-│   │   └── LanguageSelector.tsx # 语言选择器
-│   ├── i18n/
-│   │   ├── messages/          # 翻译文件
-│   │   │   ├── zh.json
-│   │   │   └── en.json
-│   │   ├── request.tsx       # 国际化配置
-│   │   └── routing.ts         # 路由配置
-│   └── lib/
-│       └── extractors/
-│           └── debianExtractor.ts # Debian 包解析核心逻辑
-├── public/                   # 静态资源
+│   │   ├── FileUpload.tsx        # 文件上传组件
+│   │   ├── PackageView.tsx       # 包信息展示组件
+│   │   ├── ThemeToggle.tsx       # 主题切换组件
+│   │   └── LanguageSelector.tsx  # 语言选择器
+│   ├── lib/
+│   │   ├── i18n/                 # 国际化配置
+│   │   │   ├── index.ts
+│   │   │   └── messages/
+│   │   │       ├── zh.json
+│   │   │       └── en.json
+│   │   ├── platform/             # 平台相关功能
+│   │   └── theme/                # 主题管理
+│   ├── App.tsx                   # 应用入口
+│   └── main.tsx                  # React 入口
+├── src-tauri/
+│   ├── src/                      # Rust 后端代码
+│   ├── capabilities/             # Tauri 权限配置
+│   ├── icons/                    # 应用图标
+│   ├── tauri.conf.json           # Tauri 配置
+│   └── Cargo.toml                # Rust 依赖配置
+├── index.html                    # HTML 模板
+├── vite.config.ts                # Vite 配置
 ├── package.json
 ├── tsconfig.json
-├── tailwind.config.ts
-└── next.config.js
+└── tailwind.config.ts
 ```
 
 ## 安全与隐私
 
-- ✅ 文件仅在服务器临时处理
-- ✅ 解析完成后立即删除，不保存任何记录
+- ✅ 文件仅在本地处理，不上传到任何服务器
 - ✅ 使用官方 dpkg 工具解析，确保提取完整性
 - ✅ 支持校验和验证
+- ✅ 开源代码，可自行审计
 
 ## 开发路线图
 
@@ -153,8 +167,16 @@ viewdeb/
 - [ ] 添加文件预览功能
 - [ ] 支持批量上传
 - [ ] 添加更多 ELF 分析细节
-- [ ] 支持直接在线安装（deb 包）
+- [ ] 支持直接安装 deb 包
 - [ ] 添加包对比功能
+
+## 架构变更记录
+
+### v0.2.0 - 架构重构
+- 从 Next.js 迁移到 Vite + React
+- 添加 Tauri 桌面应用支持
+- 从服务端渲染改为纯客户端应用
+- 移除对运行时服务器的依赖
 
 ## 贡献
 
@@ -168,9 +190,10 @@ viewdeb/
 
 本项目使用以下优秀的开源项目：
 
-- [Next.js](https://nextjs.org/) - React 框架
+- [Tauri](https://tauri.app/) - 跨平台桌面应用框架
+- [React](https://react.dev/) - UI 框架
+- [Vite](https://vitejs.dev/) - 构建工具
 - [Tailwind CSS](https://tailwindcss.com/) - CSS 框架
-- [next-intl](https://next-intl-docs.vercel.app/) - 国际化解决方案
 - [Lucide](https://lucide.dev/) - 图标库
 
 ---

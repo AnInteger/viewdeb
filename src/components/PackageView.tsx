@@ -1,8 +1,6 @@
-'use client';
-
 import { useState, useMemo } from 'react';
-import { useTranslations } from 'next-intl';
-import { ArrowLeft, Package, Clock, HardDrive, File, Folder, Cpu, Monitor, Search, Filter, ChevronDown, ChevronRight, FileText, Code2, Terminal, X, ExternalLink, Link } from 'lucide-react';
+import { useLocale, useI18n } from '@/lib/i18n';
+import { ArrowLeft, Package, Clock, HardDrive, File, Cpu, Monitor, Search, Filter, ChevronDown, ChevronRight, FileText, Code2, Terminal, X } from 'lucide-react';
 import type { ParseResult, FileTypeFilter, ELFInfo, DesktopInfo } from '@/types';
 
 interface PackageViewProps {
@@ -14,7 +12,7 @@ type FileNode = {
   path: string;
   name: string;
   depth: number;
-  isELF?: boolean;
+  isElf?: boolean;
   isDesktop?: boolean;
   size: number;
   type: 'file' | 'directory' | 'symlink' | 'elf' | 'desktop';
@@ -22,7 +20,8 @@ type FileNode = {
 };
 
 export default function PackageView({ result, onNewUpload }: PackageViewProps) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   const [activeTab, setActiveTab] = useState<'overview' | 'files' | 'scripts' | 'control'>('overview');
   const [fileFilter, setFileFilter] = useState<FileTypeFilter>('all');
   const [fileSearch, setFileSearch] = useState('');
@@ -37,10 +36,9 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
 
     result.files.forEach((file) => {
       if (file.type === 'symlink') return;
-      
+
       const parts = file.path.split('/').filter(Boolean);
       let currentPath = '/';
-      let current = root;
 
       for (let i = 0; i < parts.length; i++) {
         const part = parts[i];
@@ -48,18 +46,18 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
         currentPath += part;
 
         let node = nodeMap.get(currentPath);
-        
+
         if (!node) {
           const isLastPart = i === parts.length - 1;
-          const type = isLastPart && backendTypeToFileType(file.type, file.isELF, file.isDesktop) || 'directory';
-          
+          const type = isLastPart && backendTypeToFileType(file.type, file.isElf, file.isDesktop) || 'directory';
+
           node = {
             path: currentPath,
             name: part,
             depth: i + 1,
             size: isLastPart ? file.size : 0,
             type: type as 'file' | 'directory' | 'elf' | 'desktop',
-            isELF: file.isELF,
+            isElf: file.isElf,
             isDesktop: file.isDesktop,
             children: type === 'directory' ? [] : undefined,
           };
@@ -68,17 +66,13 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
           const isLastPart = i === parts.length - 1;
           if (isLastPart) {
             node.size = file.size;
-            node.isELF = file.isELF;
+            node.isElf = file.isElf;
             node.isDesktop = file.isDesktop;
-            const backendType = backendTypeToFileType(file.type, file.isELF, file.isDesktop);
+            const backendType = backendTypeToFileType(file.type, file.isElf, file.isDesktop);
             if (backendType && backendType !== 'directory') {
               node.type = backendType as 'file' | 'elf' | 'desktop';
             }
           }
-        }
-
-        if (i < parts.length - 1) {
-          current = node;
         }
       }
     });
@@ -87,7 +81,7 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
       if (path === '/') return;
       const parentPath = path.substring(0, path.lastIndexOf('/')) || '/';
       const parent = nodeMap.get(parentPath);
-      
+
       if (parent && parent !== node) {
         if (!parent.children) {
           parent.children = [];
@@ -101,8 +95,8 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
     return root;
   }, [result.files]);
 
-  function backendTypeToFileType(backendType: string, isELF?: boolean, isDesktop?: boolean) {
-    if (isELF) return 'elf';
+  function backendTypeToFileType(backendType: string, isElf?: boolean, isDesktop?: boolean) {
+    if (isElf) return 'elf';
     if (isDesktop) return 'desktop';
     if (backendType === 'file') return 'file';
     if (backendType === 'directory') return 'directory';
@@ -111,7 +105,7 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
 
   const visibleFiles = useMemo(() => {
     const files: FileNode[] = [];
-    
+
     function traverse(node: FileNode, parentExpanded: boolean, isRootChildren = false) {
       if (node.path === '/') {
         if (node.children) {
@@ -124,15 +118,15 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
         }
         return;
       }
-      
+
       const isExpanded = expandedPaths.has(node.path);
       const show = parentExpanded || isRootChildren;
       const matchesSearch = !fileSearch || node.path.toLowerCase().includes(fileSearch.toLowerCase());
-      
+
       if (show && matchesSearch) {
         files.push(node);
       }
-      
+
       if (node.children && isExpanded && show) {
         const sortedChildren = [...node.children].sort((a, b) => {
           if (a.type === 'directory' && b.type !== 'directory') return -1;
@@ -142,7 +136,7 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
         sortedChildren.forEach(child => traverse(child, true));
       }
     }
-    
+
     traverse(fileTree, true, false);
     return files;
   }, [fileTree, expandedPaths, fileSearch]);
@@ -150,9 +144,9 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
   const filteredFiles = useMemo(() => {
     return visibleFiles.filter(file => {
       if (file.type === 'directory') return true;
-      if (fileFilter === 'elf' && !file.isELF) return false;
+      if (fileFilter === 'elf' && !file.isElf) return false;
       if (fileFilter === 'desktop' && !file.isDesktop) return false;
-      if (fileFilter === 'other' && (file.isELF || file.isDesktop)) return false;
+      if (fileFilter === 'other' && (file.isElf || file.isDesktop)) return false;
       if (fileSearch) {
         const search = fileSearch.toLowerCase();
         if (!file.path.toLowerCase().includes(search)) return false;
@@ -189,7 +183,7 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
   };
 
   const getFileIcon = (file: FileNode, isExpanded: boolean) => {
-    if (file.isELF) return <Cpu className="w-4 h-4 text-red-400" />;
+    if (file.isElf) return <Cpu className="w-4 h-4 text-red-400" />;
     if (file.isDesktop) return <Monitor className="w-4 h-4 text-green-400" />;
     if (file.type === 'directory') {
       return isExpanded ? <ChevronDown className="w-4 h-4 text-blue-400" /> : <ChevronRight className="w-4 h-4 text-blue-400" />;
@@ -249,8 +243,8 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
             </span>
             <span className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
               <HardDrive className="w-4 h-4" />
-              {t('common.compressionRate')}: {result.stats.originalSize > 0 
-                ? ((1 - result.stats.originalSize / result.stats.extractedSize) * 100).toFixed(1) 
+              {t('common.compressionRate')}: {result.stats.originalSize > 0
+                ? ((1 - result.stats.originalSize / result.stats.extractedSize) * 100).toFixed(1)
                 : 0}%
             </span>
           </div>
@@ -301,7 +295,7 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
             formatFileSize={formatFileSize}
             elfCount={result.stats.elfCount}
             desktopCount={result.stats.desktopCount}
-            toggleExpandAll={toggleExpandAll}
+            toggleExpandAll={toggleExpandCollapseAll}
             expandButtonLabel={expandButtonLabel}
           />
         )}
@@ -322,13 +316,13 @@ export default function PackageView({ result, onNewUpload }: PackageViewProps) {
               </button>
             </div>
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
-              {selectedFile.isELF && result.elfInfo?.[selectedFile.path] && (
+              {selectedFile.isElf && result.elfInfo?.[selectedFile.path] && (
                 <ELFInfoPanel elfInfo={result.elfInfo[selectedFile.path] as ELFInfo} />
               )}
               {selectedFile.isDesktop && result.desktopInfo?.[selectedFile.path] && (
                 <DesktopInfoPanel desktopInfo={result.desktopInfo[selectedFile.path] as DesktopInfo} />
               )}
-              {!selectedFile.isELF && !selectedFile.isDesktop && selectedFile.size < 1024 * 1024 && (
+              {!selectedFile.isElf && !selectedFile.isDesktop && selectedFile.size < 1024 * 1024 && (
                 <div className="text-gray-600 text-sm dark:text-slate-400">
                   {t('common.fileSize')}: {formatFileSize(selectedFile.size)}
                   <p className="mt-4 text-gray-500 dark:text-slate-500">{t('common.filePreview')}</p>
@@ -358,7 +352,8 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
 }
 
 function ELFInfoPanel({ elfInfo }: { elfInfo: ELFInfo }) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
@@ -389,7 +384,7 @@ function ELFInfoPanel({ elfInfo }: { elfInfo: ELFInfo }) {
               <div key={i} className="text-xs font-mono text-slate-300 py-1">{header}</div>
             ))}
             {elfInfo.sectionHeaders.length > 10 && (
-              <div className="text-xs text-slate-500 py-1">{t('elfInfo.moreSections', { count: elfInfo.sectionHeaders.length - 10 })}</div>
+              <div className="text-xs text-slate-500 py-1">{t('elfInfo.moreSections').replace('{count}', String(elfInfo.sectionHeaders.length - 10))}</div>
             )}
           </div>
         </div>
@@ -399,7 +394,8 @@ function ELFInfoPanel({ elfInfo }: { elfInfo: ELFInfo }) {
 }
 
 function DesktopInfoPanel({ desktopInfo }: { desktopInfo: DesktopInfo }) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   const fields = [
     { key: 'Name', label: t('desktopInfo.name') },
     { key: 'GenericName', label: t('desktopInfo.genericName') },
@@ -455,7 +451,8 @@ function InfoItem({ label, value }: { label: string; value?: string }) {
 }
 
 function OverviewTab({ result }: { result: ParseResult }) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   return (
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -523,7 +520,7 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 }
 
 function StatCard({ label, value, format }: { label: string; value: number; format: 'size' | 'number' }) {
-  const displayValue = format === 'size' 
+  const displayValue = format === 'size'
     ? (value === 0 ? '0 B' : value < 1024 ? `${value} B` : value < 1024 * 1024 ? `${(value / 1024).toFixed(2)} KB` : `${(value / 1024 / 1024).toFixed(2)} MB`)
     : value.toLocaleString();
 
@@ -565,7 +562,8 @@ function FilesTab({
   toggleExpandAll,
   expandButtonLabel,
 }: any) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   return (
     <div>
       <div className="p-4 border-b border-gray-200 flex flex-wrap items-center gap-4 dark:border-slate-700">
@@ -606,7 +604,7 @@ function FilesTab({
           </div>
         ) : (
           <div className="divide-y divide-gray-200 dark:divide-slate-700/30">
-            {files.map((file: FileNode) => (
+            {files.map((file: any) => (
               <div
                 key={file.path}
                 onClick={() => handleFileClick(file)}
@@ -630,7 +628,8 @@ function FilesTab({
 }
 
 function ScriptsTab({ result }: { result: ParseResult }) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   return (
     <div className="p-6">
       {result.scripts ? (
@@ -661,7 +660,7 @@ function ScriptsTab({ result }: { result: ParseResult }) {
   );
 }
 
-function ScriptSection({ name, script, description }: { name: string; script: string; description: string }) {
+function ScriptSection({ script, description }: { script: string; description: string; name?: string }) {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{description}</h3>
@@ -673,7 +672,8 @@ function ScriptSection({ name, script, description }: { name: string; script: st
 }
 
 function ControlTab({ result }: { result: ParseResult }) {
-  const t = useTranslations();
+  const { locale } = useLocale();
+  const { t } = useI18n(locale);
   return (
     <div className="p-6">
       <div className="space-y-6">
