@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Upload, FileText, X, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, X, Loader2 } from 'lucide-react';
 import { useLocale, useI18n } from '@/lib/i18n';
 import { native } from '@/lib/platform';
 import type { ParseResult } from '@/types';
@@ -18,8 +18,8 @@ export default function FileUpload({ onComplete, onError, isLoading, onLoadingCh
   const [selectedFileName, setSelectedFileName] = useState<string>('');
   const [selectedFileSize, setSelectedFileSize] = useState<number>(0);
   const [dialogOpen, setDialogOpen] = useState<any>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  // Check if dialog plugin is available
   useEffect(() => {
     import('@tauri-apps/plugin-dialog').then(module => {
       setDialogOpen(() => module.open);
@@ -56,7 +56,6 @@ export default function FileUpload({ onComplete, onError, isLoading, onLoadingCh
 
   const handleUpload = async () => {
     if (!selectedFilePath) return;
-
     onLoadingChange(true);
 
     try {
@@ -85,100 +84,104 @@ export default function FileUpload({ onComplete, onError, isLoading, onLoadingCh
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
+    <div className="w-full max-w-xl">
       {!selectedFilePath ? (
-        <div
-          className="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center transition-all duration-200 hover:border-gray-400 dark:border-slate-600 dark:hover:border-slate-500"
+        <button
+          onClick={handleFileSelect}
+          onMouseEnter={() => setIsDragging(true)}
+          onMouseLeave={() => setIsDragging(false)}
+          className="group relative w-full overflow-hidden rounded-3xl bg-white dark:bg-slate-800 border-2 border-dashed border-gray-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300"
         >
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center dark:bg-slate-700">
-              <Upload className="w-10 h-10 text-gray-400 dark:text-slate-400" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{t('upload.title')}</h3>
-              <p className="text-gray-500 mb-4 dark:text-slate-400">{t('upload.subtitle')}</p>
-            </div>
-            <button
-              onClick={handleFileSelect}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              <FileText className="w-5 h-5" />
-              {t('upload.selectFile')}
-            </button>
-            <p className="text-gray-400 text-sm mt-4 dark:text-slate-500">
-              {t('upload.maxSize')}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm dark:bg-slate-800/70 dark:border-slate-700">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center dark:bg-slate-700">
-                <FileText className="w-8 h-8 text-blue-400" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{selectedFileName}</h3>
-                {selectedFileSize > 0 && (
-                  <p className="text-gray-500 dark:text-slate-400">{formatFileSize(selectedFileSize)}</p>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={handleClearFile}
-              disabled={isLoading}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed dark:hover:bg-slate-700"
-            >
-              <X className="w-5 h-5 text-gray-400 dark:text-slate-400" />
-            </button>
-          </div>
+          <div className={`absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-400/5 dark:to-purple-400/5 transition-opacity duration-300 ${isDragging ? 'opacity-100' : 'opacity-0'}`} />
 
-          {isLoading ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 text-blue-400">
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span className="text-gray-700 dark:text-white">{t('upload.parsing')}</span>
+          <div className="relative p-12">
+            <div className="flex flex-col items-center gap-6">
+              {/* Upload Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500/20 dark:bg-blue-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="relative w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Upload className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden dark:bg-slate-700">
-                <div className="bg-blue-500 h-full transition-all duration-300" style={{ width: '45%' }} />
+
+              {/* Text */}
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  选择文件
+                </h3>
+                <p className="text-gray-600 dark:text-slate-400">
+                  支持 .deb 和 .udeb 格式，最大 500MB
+                </p>
               </div>
-              <p className="text-gray-400 text-sm text-center dark:text-slate-500">
-                {t('upload.largePackageWarning') || '大型包可能需要更长时间，请耐心等待...'}
-              </p>
+
+              {/* Button */}
+              <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-blue-500/30 group-hover:-translate-y-0.5">
+                <FileText className="w-5 h-5" />
+                <span>{t('upload.selectFile')}</span>
+              </div>
             </div>
-          ) : (
-            <button
-              onClick={handleUpload}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
-            >
-              <Upload className="w-5 h-5" />
-              {t('upload.startParsing')}
-            </button>
-          )}
+          </div>
+        </button>
+      ) : (
+        <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-xl">
+          {/* Gradient Accent */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-500" />
+
+          <div className="p-8">
+            {/* File Info */}
+            <div className="flex items-start justify-between mb-8">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {selectedFileName}
+                  </h3>
+                  {selectedFileSize > 0 && (
+                    <p className="text-sm text-gray-500 dark:text-slate-400">
+                      {formatFileSize(selectedFileSize)}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={handleClearFile}
+                disabled={isLoading}
+                className="flex-shrink-0 p-2.5 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <X className="w-5 h-5 text-gray-400 dark:text-slate-400" />
+              </button>
+            </div>
+
+            {/* Loading State */}
+            {isLoading ? (
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <span className="text-base font-medium">{t('upload.parsing')}</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-400 animate-pulse rounded-full" style={{ width: '45%' }} />
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-slate-400 text-center">
+                    {t('upload.largePackageWarning') || '大型包可能需要更长时间，请耐心等待...'}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleUpload}
+                className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5"
+              >
+                <Upload className="w-5 h-5" />
+                <span>{t('upload.startParsing')}</span>
+              </button>
+            )}
+          </div>
         </div>
       )}
-
-      {/* Info boxes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-start gap-3 shadow-sm dark:bg-slate-800/30 dark:border-slate-700">
-          <AlertCircle className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-          <div>
-            <h4 className="font-medium mb-1 text-gray-900 dark:text-white">{t('fileInfo.privacyTitle')}</h4>
-            <p className="text-gray-500 text-sm dark:text-slate-400">
-              {t('fileInfo.privacyDesc')}
-            </p>
-          </div>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-start gap-3 shadow-sm dark:bg-slate-800/30 dark:border-slate-700">
-          <AlertCircle className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
-          <div>
-            <h4 className="font-medium mb-1 text-gray-900 dark:text-white">{t('fileInfo.securityTitle')}</h4>
-            <p className="text-gray-500 text-sm dark:text-slate-400">
-              {t('fileInfo.securityDesc')}
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

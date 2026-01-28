@@ -4,41 +4,28 @@ import { useTheme } from '@/lib/theme';
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
+  const buttons = [
+    { value: 'light' as const, icon: Sun, label: 'Light' },
+    { value: 'dark' as const, icon: Moon, label: 'Dark' },
+    { value: 'system' as const, icon: Monitor, label: 'System' },
+  ];
+
   return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => setTheme('light')}
-        className={`p-2 rounded-lg transition-colors ${
-          theme === 'light'
-            ? 'bg-blue-600 text-white'
-            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-600'
-        }`}
-        title="Light"
-      >
-        <Sun className="w-5 h-5" />
-      </button>
-      <button
-        onClick={() => setTheme('dark')}
-        className={`p-2 rounded-lg transition-colors ${
-          theme === 'dark'
-            ? 'bg-blue-600 text-white'
-            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-600'
-        }`}
-        title="Dark"
-      >
-        <Moon className="w-5 h-5" />
-      </button>
-      <button
-        onClick={() => setTheme('system')}
-        className={`p-2 rounded-lg transition-colors ${
-          theme === 'system'
-            ? 'bg-blue-600 text-white'
-            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-600'
-        }`}
-        title="System"
-      >
-        <Monitor className="w-5 h-5" />
-      </button>
+    <div className="flex items-center gap-1.5 p-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm">
+      {buttons.map(({ value, icon: Icon, label }) => (
+        <button
+          key={value}
+          onClick={() => setTheme(value)}
+          className={`relative p-2 rounded-lg transition-all duration-200 ${
+            theme === value
+              ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white dark:from-blue-500 dark:to-blue-400 shadow-md shadow-blue-500/25'
+              : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700'
+          }`}
+          title={label}
+        >
+          <Icon className="w-4 h-4" />
+        </button>
+      ))}
     </div>
   );
 }

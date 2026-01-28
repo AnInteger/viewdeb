@@ -4,7 +4,7 @@ import { LanguageSelector } from './components/LanguageSelector';
 import { ThemeToggle } from './components/ThemeToggle';
 import FileUpload from './components/FileUpload';
 import PackageView from './components/PackageView';
-import { Shield as ShieldIcon, Lock, Zap, FileText, Code, Cpu, HardDrive } from 'lucide-react';
+import { Shield, Lock, Zap, FileText, Code, Cpu, HardDrive } from 'lucide-react';
 import type { ParseResult } from './types';
 
 function App() {
@@ -20,175 +20,104 @@ function App() {
     setError(null);
   };
 
+  const features = [
+    { icon: Shield, title: t('features.privacy'), desc: t('features.privacyDesc') },
+    { icon: Lock, title: t('features.security'), desc: t('features.securityDesc') },
+    { icon: Zap, title: t('features.fastParsing'), desc: t('features.fastParsingDesc') },
+    { icon: FileText, title: t('features.fileList'), desc: t('features.fileListDesc') },
+    { icon: Code, title: t('features.scriptView'), desc: t('features.scriptViewDesc') },
+    { icon: Cpu, title: t('features.binaryAnalysis'), desc: t('features.binaryAnalysisDesc') },
+    { icon: HardDrive, title: t('features.formatSupport'), desc: t('features.formatSupportDesc') },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-950 dark:to-slate-900">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ViewDeb</h1>
+      <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/90 dark:bg-slate-900/95 border-b border-gray-200/50 dark:border-slate-800">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <FileText className="w-5 h-5 text-white" />
             </div>
-            <div className="flex items-center gap-4">
-              <LanguageSelector />
-              <ThemeToggle />
-            </div>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">ViewDeb</h1>
+          </div>
+
+          {/* Controls */}
+          <div className="flex items-center gap-2">
+            <LanguageSelector />
+            <ThemeToggle />
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="max-w-6xl mx-auto px-6 py-12">
         {!parseResult ? (
-          <div className="space-y-4">
+          <div className="space-y-16">
             {/* Hero Section */}
-            <div className="text-center space-y-2">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <div className="text-center space-y-4 max-w-2xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-sm text-blue-600 dark:text-blue-400 font-medium">
+                <Zap className="w-4 h-4" />
+                本地解析，安全快速
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
                 {t('upload.title')}
               </h2>
-              <p className="text-sm text-gray-500 dark:text-slate-400">
+              <p className="text-lg text-gray-600 dark:text-slate-400">
                 {t('upload.subtitle')}
               </p>
             </div>
 
             {/* Upload Component */}
-            <FileUpload
-              onComplete={setParseResult}
-              onError={setError}
-              isLoading={isLoading}
-              onLoadingChange={setIsLoading}
-            />
+            <div className="flex justify-center">
+              <FileUpload
+                onComplete={setParseResult}
+                onError={setError}
+                isLoading={isLoading}
+                onLoadingChange={setIsLoading}
+              />
+            </div>
 
             {/* Features Section */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
-              {/* Features Header */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-700 dark:to-slate-700 px-4 py-3 border-b border-gray-200 dark:border-slate-700">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+            <div className="space-y-8">
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {t('features.title')}
                 </h3>
-                <p className="text-xs text-gray-600 dark:text-slate-300 mt-0.5">
+                <p className="text-gray-600 dark:text-slate-400">
                   {t('features.subtitle')}
                 </p>
               </div>
 
-              {/* Features Grid */}
-              <div className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {/* Privacy Protection */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <ShieldIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.privacy')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.privacyDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Secure Parsing */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.security')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.securityDesc')}
-                      </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {features.map((feature, index) => (
+                  <div
+                    key={index}
+                    className="group relative p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <feature.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="space-y-1 flex-1 min-w-0">
+                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                          {feature.title}
+                        </h4>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
+                          {feature.desc}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
 
-                  {/* Fast Parsing */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Zap className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.fastParsing')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.fastParsingDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* File List */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.fileList')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.fileListDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Script View */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Code className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.scriptView')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.scriptViewDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Binary Analysis */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Cpu className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.binaryAnalysis')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.binaryAnalysisDesc')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Format Support */}
-                  <div className="flex items-center gap-2 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
-                    <div className="w-8 h-8 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <HardDrive className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium text-gray-900 dark:text-white">
-                        {t('features.formatSupport')}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight">
-                        {t('features.formatSupportDesc')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tech Stack Footer */}
-                <div className="mt-3 pt-2.5 border-t border-gray-200 dark:border-slate-700">
-                  <p className="text-[10px] text-center text-gray-500 dark:text-slate-400">
-                    {t('features.techStack')}
-                  </p>
-                </div>
+              {/* Tech Stack Footer */}
+              <div className="pt-8 border-t border-gray-200 dark:border-slate-700">
+                <p className="text-center text-sm text-gray-500 dark:text-slate-400">
+                  {t('features.techStack')}
+                </p>
               </div>
             </div>
           </div>
