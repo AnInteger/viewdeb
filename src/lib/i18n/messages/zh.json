@@ -5,7 +5,8 @@
     "selectFile": "选择文件",
     "maxSize": "支持的最大文件大小: 500 MB",
     "parsing": "正在解析包...",
-    "startParsing": "开始解析"
+    "startParsing": "开始解析",
+    "largePackageWarning": "大型包可能需要更长时间，请耐心等待..."
   },
   "fileInfo": {
     "privacyTitle": "隐私保护",

@@ -5,7 +5,8 @@
     "selectFile": "Select File",
     "maxSize": "Maximum file size: 500 MB",
     "parsing": "Parsing package...",
-    "startParsing": "Start Parsing"
+    "startParsing": "Start Parsing",
+    "largePackageWarning": "Large packages may take longer to process, please wait..."
   },
   "fileInfo": {
     "privacyTitle": "Privacy Protection",

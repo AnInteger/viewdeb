@@ -1,7 +1,6 @@
 use crate::utils::shell::exec_command;
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::io::Read;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
@@ -392,36 +391,5 @@ impl DebExtractor {
             md5sums,
             conffiles,
         })
-    }
-
-    /// Check if a file is an ELF binary
-    fn is_elf_file(path: &Path) -> bool {
-        if let Ok(mut file) = fs::File::open(path) {
-            let mut buffer = [0u8; 4];
-            if file.read_exact(&mut buffer).is_ok() {
-                // ELF magic number: 0x7F 'E' 'L' 'F'
-                return buffer == [0x7F, 0x45, 0x4C, 0x46];
-            }
-        }
-        false
-    }
-
-    /// Calculate directory size
-    pub fn calculate_directory_size(dir_path: &Path) -> Result<u64, String> {
-        let mut total = 0u64;
-
-        for entry in WalkDir::new(dir_path)
-            .follow_links(false)
-            .into_iter()
-            .filter_map(|e| e.ok())
-        {
-            if entry.file_type().is_file() {
-                if let Ok(metadata) = entry.metadata() {
-                    total += metadata.len();
-                }
-            }
-        }
-
-        Ok(total)
     }
 }
